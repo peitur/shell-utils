@@ -1,7 +1,7 @@
 
 
 venv:
-	virtualenv -no-wheel --no-setuptool .
+	virtualenv --no-wheel --no-setuptool .
 
 clean:
 	rm -fR lib \
