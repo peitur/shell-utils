@@ -1,7 +1,18 @@
+
+lib
+pyvenv.cfg
+bin/activate*
+bin/easy_install*
+bin/pip*
+bin/python*
+bin/wheel*
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
+
 
 # C extensions
 *.so
