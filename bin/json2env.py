@@ -27,7 +27,20 @@ def print_usage( tool ):
 def convert( data, key=None ):
     ret = list()
     
+    if istype( data, "str") and key:
+        ret.append( "%s=\"%s\"" % ( key.upper(), data ) )
+    else:
+        if istype( data, "list" ):
+            for e, item in enumerate( data ):
+                ret += convert( item, "%s%s" % ( key, e ) )
 
+        if istype( data, "dict" ):
+            for k in  data:
+                item = data[k]
+                nkey = k
+                if key:
+                    nkey = "%s_%s" % ( key, k )
+                ret += convert( item, nkey )
 
     return ret
 
