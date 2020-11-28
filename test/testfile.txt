@@ -1,0 +1,3 @@
+var1=line1
+var2=line2
+var3=line3
