@@ -21,7 +21,9 @@ def print_source( slines, **opt ):
         print( line )
 
 def print_usage( tool ):
-    print("%s <inputfile>.json" % ( tool ))
+    print("%s <inputfile>.json" % ( pathlib.Path( tool ).name ))
+    print("Use in scripts with:")
+    print(">\teval $( %s file.json )" % ( tool ))
 
 ## Basically, get all leaves while tracking the path to them (through lists and dicts)
 def convert( data, key=None ):
@@ -57,8 +59,9 @@ if __name__ == "__main__":
     opt = dict()
 
     if len( sys.argv ) < 2:
+        print("ERROR: Need input file as only argument" )
         print_usage( sys.argv[0] )
-        raise AttributeError( "Need input file as only argument" )
+        sys.exit(1)
 
     opt['inputfile'] = sys.argv[1]
 
