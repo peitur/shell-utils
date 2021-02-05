@@ -22,6 +22,9 @@ def print_usage( tool ):
 
 def convert( data ):
     ret = dict()
+
+    print("----------------------------------")
+
     for line in data:
         line = line.lstrip().rstrip()
         kv = [ v.lstrip().rstrip() for v in re.split( r"=", line ) ]
@@ -31,21 +34,34 @@ def convert( data ):
         part = parts.pop(0)
 
         ret[ part ] = convert_x( parts, ret, value )
+    print("----------------------------------")
 
     return ret
     
 
-def convert_x( parts, subdata, value = None ):
-    ret = dict()
-
+def convert_x( parts, data, value = None ):
+    
     if len( parts ) == 0:
-        return value 
+        return value
+
+    subdata = dict()
 
     part = parts.pop(0)
+    xdata = convert_x( parts, subdata, value )
+    
+    if type( xdata ).__name__ in ("dict"):
 
-    ret[ part ] = convert_x( parts, subdata, value )    
+        subdata[ part ] = dict()
+        for x in xdata:
+            subdata[ part ][ x ] = xdata[x]
 
-    return ret
+    elif type( xdata ).__name__ in ("int", "flot","str"):
+        subdata[part] = xdata
+
+    return subdata
+
+
+
  
 if __name__ == "__main__":
     opt = dict()
