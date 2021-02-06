@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import sys, os, re
-import json, jinja2
+import json
 import pathlib
 from pprint import pprint
 

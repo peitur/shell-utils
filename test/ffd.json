@@ -1,0 +1,9 @@
+{
+	"src":".",
+	"dest":"outtest",
+	"prefix":"",
+	"postfix":"",
+	"naive":"yes",
+	"move":"no",
+	"dest_ref":"yes"
+}
