@@ -96,10 +96,10 @@ if __name__ == "__main__":
     options['prefix'] = config.get('prefix', '' )
     options['postfix'] = config.get('postfix', '' )
 
-    sourcelist = { FileHash( f ).hash(): f.resolve() for f in dirlist( options['source-dir' ])  }
+    sourcelist = { FileHash( f ).hash(): "%s/%s"%(options['source-dir'], f.name) for f in dirlist( options['source-dir' ])  }
 
     if options['use-dest-ref']:
-        destlist = { FileHash( f ).hash(): f.resolve() for f in dirlist( options['dest-dir' ])  }
+        destlist = { FileHash( f ).hash(): "%s/%s%s%s" % ( options['dest-dir'], options['prefix'], f.name, options['postfix'] )  for f in dirlist( options['dest-dir' ])  }
 
     pprint( sourcelist )
     pprint( destlist )
