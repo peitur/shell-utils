@@ -92,16 +92,14 @@ if __name__ == "__main__":
     options['debug'] = asbool( config.get('debug', False ) )
     options['naive'] = asbool( config.get('naive', DEF_NAIVE ) )
     options['move'] = asbool( config.get('move', DEF_MOVE ) )
-    options['use-dest-ref'] = asbool( config.get('dest_ref', DEF_DEST_REF ) )
     options['prefix'] = config.get('prefix', '' )
     options['postfix'] = config.get('postfix', '' )
 
     sourcelist = { FileHash( f ).hash(): "%s/%s"%(options['source-dir'], f.name) for f in dirlist( options['source-dir' ])  }
 
-    if options['use-dest-ref']:
-        destlist = { FileHash( f ).hash(): "%s/%s%s%s" % ( options['dest-dir'], options['prefix'], f.name, options['postfix'] )  for f in dirlist( options['dest-dir' ])  }
+    destlist = { FileHash( f ).hash(): "%s/%s%s%s" % ( options['dest-dir'], options['prefix'], f.name, options['postfix'] )  for f in dirlist( options['dest-dir' ])  }
 
-    pprint( sourcelist )
-    pprint( destlist )
+    diffmissing = [ s for s in sourcelist if s not in destlist ]
+    for c in diffmissing:
+       print( "[+] Missing %s" % ( sourcelist[ c ] ) )
 
-    
