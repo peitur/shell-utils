@@ -60,12 +60,22 @@ def random_by_type( strtype, length ):
 
     if strtype in ("n","N", "num"):
         return random_number( length )
-    elif strtype in ("a","A","alfa"):
+    elif strtype in ("A","ALFA"):
+        return random_lower( length).upper()
+    elif strtype in ("a","alfa"):
         return random_lower( length )
     elif strtype in ("s","S","str"):
         return random_string( length )
     elif strtype in ("b","B","b64"):
         return random_base64( length )
+    elif strtype in ("X","HEX"):
+        return random_hex( length ).upper()
+    elif strtype in ("x","hex"):
+        return random_hex( length )
+    elif strtype in ("O","OCT"):
+        return random_octal( length ).upper()
+    elif strtype in ("o","oct" ):
+        return random_octal( length )
     else:
         return strtype
 
