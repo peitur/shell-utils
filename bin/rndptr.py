@@ -72,8 +72,6 @@ def random_by_type( strtype, length ):
         return random_hex( length ).upper()
     elif strtype in ("x","hex"):
         return random_hex( length )
-    elif strtype in ("O","OCT"):
-        return random_octal( length ).upper()
     elif strtype in ("o","oct" ):
         return random_octal( length )
     else:
