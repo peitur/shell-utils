@@ -80,11 +80,13 @@ def random_by_type( strtype, length ):
 def load_pattern( pattern ):
     
     matches = list()
-    rx = re.findall( r'\[\s*(([A-Za-z]{,4}):([0-9]+))\s*\]', pattern, re.DOTALL )
+    rx = re.findall( r'\[\s*(([A-Za-z]{,4})[:]*([0-9]*))\s*\]', pattern, re.DOTALL )
     for x in rx:
         full = x[0]
         dtype = x[1]
-        dnum = int( x[2] )
+        dnum = 1
+        if len( x[2] ) != 0:
+          dnum = int( x[2] )
         rndstr = random_by_type( dtype, dnum )
 
         matches.append( (full, rndstr ) )
