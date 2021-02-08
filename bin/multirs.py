@@ -3,9 +3,21 @@
 import os, sys, re
 import json
 import pathlib
-import hashlib, shutil
+import hashlib, shutil, subprocess
 from pprint import pprint
 
+
+def ftree( root ):
+    pass
+
+def run_command( cmd, **opt ):
+    pass
+
+def run_rsync( sfile, **opt ):
+    pass
+
+def fileinfo( filename, **opt ):
+    pass
 
 
 
