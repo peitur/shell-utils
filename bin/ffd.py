@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import sys, os, re
-import pathlib
+import pathlib, shutil
 import hashlib
 import json
 from pprint import pprint
@@ -95,12 +95,17 @@ if __name__ == "__main__":
     options['prefix'] = config.get('prefix', '' )
     options['postfix'] = config.get('postfix', '' )
 
-    sourcelist = { FileHash( f ).hash(): "%s/%s"%(options['source-dir'], f.name) for f in dirlist( options['source-dir' ])  }
+    sourcelist = { FileHash( f ).hash(): "%s/%s" % ( options['source-dir'], f.name ) for f in dirlist( options['source-dir' ])  }
+#     destlist = { FileHash( f ).hash(): "%s/%s%s%s" % ( options['dest-dir'], options['prefix'], f.name, options['postfix'] )  for f in dirlist( options['source-dir' ])  }
 
-    destlist = { FileHash( f ).hash(): "%s/%s%s%s" % ( options['dest-dir'], options['prefix'], f.name, options['postfix'] )  for f in dirlist( options['dest-dir' ])  }
+    for s in sourcelist:
+        f = pathlib.Path( sourcelist[ s ] )
+        d = pathlib.Path( "%s/%s%s%s" % ( options['dest-dir'], options['prefix'], f.name, options['postfix'] ) )
 
-    diffmissing = [ s for s in sourcelist if s not in destlist ]
-    for c in diffmissing:
-       print( "[+] Missing %s" % ( sourcelist[ c ] ) )
-
-
+        if not d.exists():
+            if options['move']:
+                print("[+] Nove %s -> %s" % ( f.resolve(), d.resolve() ) )
+                shutil.move( str( f ), str( d ) )
+            else:
+                print("[+] Copy %s -> %s" % ( f.resolve(), d.resolve() ) )
+                shutil.copyfile( str( f ), str( d )   )

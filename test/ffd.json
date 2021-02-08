@@ -1,9 +1,8 @@
 {
 	"src":".",
 	"dest":"outtest",
-	"prefix":"",
-	"postfix":"",
+	"prefix":"aaa.",
+	"postfix":".zzz",
 	"naive":"yes",
-	"move":"no",
-	"dest_ref":"yes"
+	"move":"no"
 }
