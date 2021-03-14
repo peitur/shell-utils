@@ -3,10 +3,10 @@
 import sys, re, os
 import pathlib
 import string
-
+import getopt
 from pprint import pprint
 
-
+DEFAULT_SIZE="10m"
 DEFAULT_SEPPARATOR='_'
 ALLOWED_SEPPARSTORS="._-" + string.ascii_lowercase + string.ascii_uppercase
 
@@ -38,6 +38,14 @@ def size_as_bytes( s ):
   else:
     raise AttributeError("Malformed size reference")
 
+def valid_sepparator( sep ):
+  for s in sep:
+    if s not in ALLOWED_SEPPARATORS:
+      return False
+  return True
+
+def process_file( srcfname, tpath, psize, **opt ):
+  pass 
 
 def print_help():
   pass
@@ -48,5 +56,16 @@ if __name__ == "__main__":
   opt['file'] = None
   opt['sep'] = DEFAULT_SEPPARATOR
   opt['target'] = None
+  opt['size'] = size_as_bytes( DEFAULT_SIZE )
 
+  if not valid_sepparator( opt['sep'] ):
+    raise AttributeError("Unvalid sepparator")
+
+  if not pathlib.Path( opt['file'] ).exists():
+    raise FileNotFoundError( oot['file'] )
+
+  (numparts, totbytes ) = process_file( opt['file'], opt['target'], opt['size'],  debug=opt['debug'], sepparator=opt['sep'] )
+ 
+
+  
 
