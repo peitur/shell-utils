@@ -53,7 +53,7 @@ def process_file( srcfname, tpath, suffix, psize, **opt ):
   fout = None
 
   while running:
-    i, o, e = select.select( [sys.stdin], [], [], 0 )
+    i, o, e = select.select( [sys.stdin], [], [] )
     if i:
       line = sys.stdin.readline()
       nbytes = len( line )
