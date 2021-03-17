@@ -48,7 +48,6 @@ def process_file( srcfname, tpath, suffix, psize, **opt ):
   numbytes = 0
   partbytes = 0
   iteration = 0
-  start_iteration = 0
 
   fname = None
   fout = None
@@ -60,12 +59,10 @@ def process_file( srcfname, tpath, suffix, psize, **opt ):
       nbytes = len( line )
 
       if not fout:
-            
         while not fname or fname.exists():
           fname = pathlib.Path( "%s/%s" % ( tpath, filename( srcfname, iteration,  suffix, opt['sepparator'] ) ) )
           iteration += 1
-      
-        fout = open( fname.name , "w" )
+        fout = open( str( fname.resolve() ), "w" )
         partbytes = 0
 
       fout.write( line )
@@ -77,12 +74,16 @@ def process_file( srcfname, tpath, suffix, psize, **opt ):
           if opt['debug']: print("Wrote %s bytes to %s" %( partbytes, fname ))
           fout.close()
           fout = None
+          fname = None
+
           
       if opt['stop'] in ("over"):
         if partbytes > psize:
           if opt['debug']: print("Wrote %s bytes to %s" %( partbytes, fname ))
           fout.close()
           fout = None
+          fname = None
+
 
   if fout:
     fout.close()
