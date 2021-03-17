@@ -64,7 +64,7 @@ def process_file( srcfname, tpath, psize, **opt ):
           fname = pathlib.Path( "%s/%s" % ( tpath, filename( srcfname, iteration, opt['sepparator'] ) ) )
           iteration += 1
       
-        fout = open( fname.name , "w" )
+        fout = open( str( fname.resolve() ), "w" )
         partbytes = 0
 
       fout.write( line )
