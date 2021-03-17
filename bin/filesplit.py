@@ -49,37 +49,44 @@ def process_file( srcfname, tpath, psize, **opt ):
   numbytes = 0
   partbytes = 0
   iteration = 0
+  start_iteration = 0
 
   fname = None
+  fout = None
   with open( srcfname, "r" ) as fin:
-    for line in fin.readline():
+    for line in fin.readlines():
       
       nbytes = len( line )
 
-      if not fname:
-        fname = pathlib.Path( "%s/%s" % ( tpath, filename( srcfname, iteration, opt['sepparator'] ) ) )
+      if not fout:
+            
+        while not fname or fname.exists():
+          fname = pathlib.Path( "%s/%s" % ( tpath, filename( srcfname, iteration, opt['sepparator'] ) ) )
+          iteration += 1
+      
         fout = open( fname.name , "w" )
-        iteration += 1
         partbytes = 0
 
+      fout.write( line )
+      numbytes += nbytes
+      partbytes += nbytes
 
       if opt['stop'] in ("under"):
         if partbytes + nbytes > psize:
+          if opt['debug']: print("Wrote %s bytes to %s" %( partbytes, fname ))
           fout.close()
           fout = None
           
       if opt['stop'] in ("over"):
         if partbytes > psize:
+          if opt['debug']: print("Wrote %s bytes to %s" %( partbytes, fname ))
           fout.close()
           fout = None
 
-      if fout:
-        fout.write( line )
-        numbytes += nbytes
-        partbytes += nbytes
 
 
 
+  if opt['debug']: print("Wrote %s bytes to %s" %( partbytes, fname ))
 
   return (iteration, numbytes )
 
@@ -90,9 +97,9 @@ if __name__ == "__main__":
   opt = dict()
   opt['debug'] = False
   opt['file'] = None
-  opt['target'] = None
   opt['suffix'] = None
   opt['prefix'] = None
+  opt['target'] = "."
   opt['stop-point'] = "under"
   opt['sep'] = DEFAULT_SEPPARATOR
   opt['size'] = size_as_bytes( DEFAULT_SIZE )
