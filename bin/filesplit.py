@@ -12,7 +12,7 @@ ALLOWED_SEPPARSTORS="._-" + string.ascii_lowercase + string.ascii_uppercase
 
 def filename( srcf, itr, sep=DEFAULT_SEPPARATOR ):
   itr = int( itr )
-  fparts = re.split( "\.", srcf )
+  fparts = re.split( "\.", srcf.name )
   if len( fparts ) > 1:
       last = fparts[-1]
       del fparts[-1]
@@ -40,32 +40,104 @@ def size_as_bytes( s ):
 
 def valid_sepparator( sep ):
   for s in sep:
-    if s not in ALLOWED_SEPPARATORS:
+    if s not in ALLOWED_SEPPARSTORS:
       return False
   return True
 
 def process_file( srcfname, tpath, psize, **opt ):
-  pass 
+  
+  numbytes = 0
+  partbytes = 0
+  iteration = 0
+
+  fname = None
+  with open( srcfname, "r" ) as fin:
+    for line in fin.readline():
+      
+      nbytes = len( line )
+
+      if not fname:
+        fname = pathlib.Path( "%s/%s" % ( tpath, filename( srcfname, iteration, opt['sepparator'] ) ) )
+        fout = open( fname.name , "w" )
+        iteration += 1
+        partbytes = 0
+
+
+      if opt['stop'] in ("under"):
+        if partbytes + nbytes > psize:
+          fout.close()
+          fout = None
+          
+      if opt['stop'] in ("over"):
+        if partbytes > psize:
+          fout.close()
+          fout = None
+
+      if fout:
+        fout.write( line )
+        numbytes += nbytes
+        partbytes += nbytes
+
+
+
+
+  return (iteration, numbytes )
 
 def print_help():
-  pass
+  print("Help for: %s" % ( pathlib.Path( sys.argv[0]).name ) )
 
 if __name__ == "__main__":
   opt = dict()
   opt['debug'] = False
   opt['file'] = None
-  opt['sep'] = DEFAULT_SEPPARATOR
   opt['target'] = None
+  opt['suffix'] = None
+  opt['prefix'] = None
+  opt['stop-point'] = "under"
+  opt['sep'] = DEFAULT_SEPPARATOR
   opt['size'] = size_as_bytes( DEFAULT_SIZE )
 
-  if not valid_sepparator( opt['sep'] ):
-    raise AttributeError("Unvalid sepparator")
+  (options, rest ) = getopt.getopt( sys.argv[1:], "hi:o:p:s:x:c:", ["debug","help", "in", "out", "suffix=", "prefix=", "sepparator=", "stop=", "size="] )
 
-  if not pathlib.Path( opt['file'] ).exists():
-    raise FileNotFoundError( oot['file'] )
+  for o, a in options:
+    if o in ("-h", "--help" ):
+      print_help()
+      sys.exit(0)
+    if o in ("--debug"):
+      opt['debug'] = True   
+    elif o in ("-i", "--in" ):
+      opt['file'] = pathlib.Path( a )
+    elif o in ("-o", "--out"):
+      opt['target'] = pathlib.Path( a )
+    elif o in ("-x", "--sepparator"):
+      opt['sep'] = a
+    elif o in ("-s", "--suffix" ):
+      opt['suffix'] = a
+    elif o in ("-p","--prefix"):
+      opt['prefix'] = a
+    if o in ("-c", "--size"):
+      opt['size'] = size_as_bytes( a )
+    elif o in ("--stop"):
+      if a.lower() in ("under", "over" ):
+        opt['stop-point'] = a.lower()
 
-  (numparts, totbytes ) = process_file( opt['file'], opt['target'], opt['size'],  debug=opt['debug'], sepparator=opt['sep'] )
- 
+
+  if len( rest ) > 0:
+    if not opt['file']:
+      opt['file'] = pathlib.Path( rest.pop(0) )
+
+  if opt['file'] and opt['file'].exists():
+    
+    if not valid_sepparator( opt['sep'] ):
+      raise AttributeError("Unvalid sepparator")
+
+    if not pathlib.Path( opt['file'] ).exists():
+      raise FileNotFoundError( opt['file'] )
+
+    (numparts, totbytes ) = process_file( opt['file'], opt['target'], opt['size'],  debug=opt['debug'], sepparator=opt['sep'], stop=opt['stop-point'] )
+    if opt['debug']: print("Created %s parts, total %s bytes" % ( numparts, totbytes))
+  else:
+    print_help()     
 
   
 
