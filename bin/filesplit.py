@@ -18,7 +18,7 @@ def filename( srcf, itr, sep=DEFAULT_SEPPARATOR ):
       del fparts[-1]
       return "%s%s%s%s" % ( ".".join( fparts ), sep, itr, last )
   else:
-    return "%s%s%s" % ( srcf, sep, itr )
+    return "%s%s%s" % ( srcf.name, sep, itr )
 
 def size_as_bytes( s ):
   if type( s ).__name__ == "int": return s
