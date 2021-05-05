@@ -18,7 +18,7 @@ def process_file( ):
         if len( line ) > 0:
             print( base64.b64encode( line.encode(("utf-8")) ).decode("utf-8") )  
 
-  return (iteration, numbytes )
+  return
 
 def print_help():
   print("Help for: %s" % ( pathlib.Path( sys.argv[0]).name ) )
