@@ -17,7 +17,7 @@ for V in ${ARGS[@]}; do
 			echo "[+] INFO: Checking ${CPWD}/${X}"
 			if [[ -d ${CPWD}/${X}/.git ]]; then
 				cd ${CPWD}/$X
-				git pull
+				git pull --ff-only
 				cd ${CPWD}
 			fi
 		fi
