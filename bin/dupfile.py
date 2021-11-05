@@ -71,9 +71,9 @@ def dirtree( path, pattern=r".*" ):
     if not re.match( pattern, str( fle) ):
       continue
 
-    if fle.is_dir():
+    if fle.is_dir() and not fle.is_symlink():
       flist = dict_list_merge( flist, dirtree( fle, pattern ) )
-    else:
+    elif fle.is_file() and not fle.is_symlink():
         fhash = FileHash( fle ).hash()
         if fhash not in flist:
           flist[ fhash ] = list()
