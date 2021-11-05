@@ -81,6 +81,22 @@ def dirtree( path, pattern=r".*" ):
       
   return flist    
 
+
+def byte_unit( s ):
+    current = int( s )
+    units = ["B","KB","MB","GB", "TB", "PB"]
+
+    for i,x in enumerate( units ):
+        if current < 1024:
+            return (current, units[i] )
+
+        if i >= len( units ) - 1:
+            return (current, units[i] )
+
+        current = current / 1024
+    return (0,"none")
+
+
 if __name__ == "__main__":
   options = dict()
   options['paths'] = list()
@@ -91,14 +107,32 @@ if __name__ == "__main__":
     options['paths'] = ["."]
 
   sums = dict()
+  totssize = 0
+  totxsize = 0
+  totysize = 0
+
   for path in options['paths']:
     fullt_list = dirtree( path )
     for f in fullt_list:
           
       if len( fullt_list[ f ] ) > 1:
+        sfsize = byte_unit( fullt_list[ f ][0].stat().st_size )
+        xfsize = byte_unit( fullt_list[ f ][0].stat().st_size * (len( fullt_list[ f ] )  ) )
+        yfsize = byte_unit( fullt_list[ f ][0].stat().st_size * (len( fullt_list[ f ] ) - 1) )
+
+        totssize += fullt_list[ f ][0].stat().st_size
+        totxsize += fullt_list[ f ][0].stat().st_size * (len( fullt_list[ f ] )  ) 
+        totysize += fullt_list[ f ][0].stat().st_size * (len( fullt_list[ f ] ) - 1 )
+        
         print("")        
         print("%s - %s :" % ( f, fullt_list[ f ][0].name ) )
         print("-"*32)
         print("%s" % (  "\n".join( [ str(x) for x in fullt_list[ f ] ] ) ) )
         print("-"*32)
-           
+        print( "Total %.2f %s [%.2f %s], could save %.2f %s"% ( xfsize[0],xfsize[1], sfsize[0], sfsize[1] , yfsize[0], yfsize[1] ) )
+
+  ( sumssize, sunit ) = byte_unit( totssize ) 
+  ( sumxsize, xunit ) = byte_unit( totxsize ) 
+  ( sumysize, yunit ) = byte_unit( totysize )    
+
+  print( "Total %.2f %s [%.2f %s], could save %.2f %s"% ( sumxsize, xunit, sumssize, sunit, sumysize, yunit  ) )
